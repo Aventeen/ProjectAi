@@ -1,22 +1,227 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>SadBot Labs</title>
+  <style>
+    :root {
+      --bg-light: url('https://i.supaimg.com/3d5abfb6-b1a8-4905-8121-95f9566598a9.jpg');
+      --primary: #00eaff;
+      --accent: #7f5af0;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Poppins', sans-serif;
+      background-color: #000;
+      transition: all 0.3s ease;
+    }
+    body.light {
+      background-color: #fff;
+    }
+    .background-image {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: var(--bg-light);
+      background-size: cover;
+      background-position: center;
+      z-index: 0;
+      transition: opacity 0.3s ease;
+    }
+    .overlay {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(10px);
+      transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
+    }
+    body.light .overlay {
+      background-color: rgba(255, 255, 255, 0.05);
+      backdrop-filter: none;
+    }
+    .header {
+      z-index: 3;
+      width: 100%;
+      padding: 1rem 0;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--primary);
+      text-shadow: 0 0 12px var(--primary);
+    }
+    .navbar {
+      z-index: 3;
+      width: 100%;
+      padding: 0.5rem 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .navbar a {
+      padding: 0.5rem 0.9rem;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      font-weight: bold;
+      border-radius: 8px;
+      text-decoration: none;
+      box-shadow: 0 0 10px rgba(127, 90, 240, 0.5);
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+      white-space: nowrap;
+    }
+    .navbar a:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px var(--accent);
+    }
+    body.light .navbar a {
+      background: linear-gradient(135deg, #00cfff, #b69aff);
+      color: #000;
+      box-shadow: 0 0 10px rgba(180, 150, 255, 0.5);
+    }
+    body.light .navbar a:hover {
+      box-shadow: 0 0 15px #b69aff;
+    }
+    .content {
+      flex-grow: 1;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .toggle-btn {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      padding: 0.6rem 1.2rem;
+      background: var(--accent);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--accent);
+      transition: background 0.3s ease, transform 0.2s ease;
+      z-index: 4;
+    }
+    .toggle-btn:hover {
+      transform: scale(1.05);
+      background: #5a3dd5;
+    }
+    body.light .toggle-btn {
+      background: #9b80ff;
+      box-shadow: 0 0 10px #bbaaff;
+      color: #000;
+    }
+    body.light .toggle-btn:hover {
+      background: #b39eff;
+    }
+    .led-border {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 5;
+      pointer-events: none;
+    }
+    body.light .led-border {
+      display: none;
+    }
+    .led-bar {
+      position: absolute;
+    }
+    .led-1 {
+      animation: moveLedSmoothly 10s linear infinite;
+    }
+    .led-2 {
+      animation: moveLedSmoothly 10s linear infinite;
+      animation-delay: -5s;
+    }
+    @keyframes moveLedSmoothly {
+      0% { top: 0; left: 0; width: 70px; height: 5px; background: linear-gradient(to right, #9f00ff, #00eaff); box-shadow: 0 0 15px #9f00ff; }
+      25% { top: 0; left: calc(100% - 70px); width: 70px; height: 5px; background: linear-gradient(to right, #00eaff, #9f00ff); box-shadow: 0 0 15px #00eaff; }
+      25.01% { top: 0; left: calc(100% - 5px); width: 5px; height: 70px; }
+      50% { top: calc(100% - 70px); left: calc(100% - 5px); width: 5px; height: 70px; background: linear-gradient(to bottom, #00eaff, #ff33cc); box-shadow: 0 0 15px #ff33cc; }
+      50.01% { top: calc(100% - 5px); left: calc(100% - 70px); width: 70px; height: 5px; }
+      75% { top: calc(100% - 5px); left: 0; width: 70px; height: 5px; background: linear-gradient(to left, #ff33cc, #a366ff); box-shadow: 0 0 15px #a366ff; }
+      75.01% { top: calc(100% - 70px); left: 0; width: 5px; height: 70px; }
+      100% { top: 0; left: 0; width: 5px; height: 70px; background: linear-gradient(to top, #a366ff, #9f00ff); box-shadow: 0 0 15px #9f00ff; }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
-<body>
-  <h1>SadBot Labs - Navigasi Proyek</h1>
-  <ul>
-    <li><a href="project1/">Project 1</a></li>
-    <li><a href="project2/">Project 2</a></li>
-    <li><a href="project3/">Project 3</a></li>
-    <li><a href="project4/">Project 4</a></li>
-    <li><a href="project5/">Project 5</a></li>
-    <li><a href="project6/">Project 6</a></li>
-    <li><a href="project7/">Project 7</a></li>
-    <li><a href="project8/">Project 8</a></li>
-    <li><a href="project9/">Project 9</a></li>
-    <li><a href="project10/">Project 10</a></li>
-  </ul>
+<body class="light">
+  <div class="background-image"></div>
+  <div class="led-border">
+    <div class="led-bar led-1"></div>
+    <div class="led-bar led-2"></div>
+  </div>
+  <div class="overlay">
+    <div class="header">SadBot Labs</div>
+    <div class="navbar" id="projects"></div>
+    <div class="content"></div>
+    <button class="toggle-btn" onclick="toggleMode()">🌗 Ganti Mode</button>
+  </div>
+
+  <!-- Suara Klik -->
+  <audio id="typing-sound" preload="auto">
+    <source src="click.mp3" type="audio/mp3">
+    Suara tidak tersedia.
+  </audio>
+
+  <script>
+    const projectList = [
+      { name: "Project 1", link: "project1/" },
+      { name: "Project 2", link: "project2/" },
+      { name: "Project 3", link: "project3/" },
+      { name: "Project 4", link: "project4/" },
+      { name: "Project 5", link: "project5/" },
+      { name: "Project 6", link: "project6/" },
+      { name: "Project 7", link: "project7/" },
+      { name: "Project 8", link: "project8/" },
+      { name: "Project 9", link: "project9/" },
+      { name: "Project 10", link: "project10/" }
+    ];
+
+    const container = document.getElementById('projects');
+    projectList.forEach(proj => {
+      const btn = document.createElement('a');
+      btn.href = proj.link;
+      btn.textContent = proj.name;
+      container.appendChild(btn);
+    });
+
+    function toggleMode() {
+      document.body.classList.toggle('light');
+    }
+
+    // Efek suara saat klik tombol dan link
+    const typingSound = document.getElementById('typing-sound');
+    function playClickSound() {
+      typingSound.currentTime = 0;
+      typingSound.play();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const allClickable = document.querySelectorAll('a, button');
+      allClickable.forEach(el => {
+        el.addEventListener('click', playClickSound);
+      });
+    });
+  </script>
 </body>
 </html>
