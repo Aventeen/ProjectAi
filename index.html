@@ -39,6 +39,11 @@
       color: #ccc;
       letter-spacing: 2px;
     }
+    .description {
+      margin-top: 1rem;
+      font-size: 1rem;
+      color: #aaa;
+    }
     .loader-bar {
       width: 250px;
       height: 5px;
@@ -59,6 +64,23 @@
       background-size: 200% 100%;
       animation: shimmer 2s linear infinite;
     }
+    .go-button {
+      margin-top: 2rem;
+      padding: 0.7rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #000;
+      background-color: var(--primary);
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+    .go-button:hover {
+      background-color: var(--accent);
+      color: #fff;
+    }
     @keyframes fadeIn {
       from { opacity: 0; transform: scale(0.9); }
       to { opacity: 1; transform: scale(1); }
@@ -74,7 +96,9 @@
   <div class="container">
     <div class="title">SadBot Labs</div>
     <div class="subtitle">MEMUAT...</div>
+    <p class="description">Halaman ini adalah gerbang awal menuju sistem otomatisasi SadBot Labs. Tunggu sebentar, atau klik tombol di bawah ini untuk langsung masuk.</p>
     <div class="loader-bar"></div>
+    <a href="beranda.html" class="go-button">GO</a>
   </div>
 </body>
 </html>
