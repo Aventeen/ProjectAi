@@ -177,13 +177,8 @@
     <button class="toggle-btn" onclick="toggleMode()">🌗 Ganti Mode</button>
   </div>
 
-  <!-- Suara Klik -->
-  <audio id="typing-sound" preload="auto">
-    <source src="click.mp3" type="audio/mp3">
-    Suara tidak tersedia.
-  </audio>
-
   <script>
+    // --- Daftar Proyek (Tidak Berubah) ---
     const projectList = [
       { name: "ai_puterjs_free", link: "https://aventeen.github.io/Ai_Duel_Puterjs" },
       { name: "Project 2", link: "project2/" },
@@ -209,17 +204,59 @@
       document.body.classList.toggle('light');
     }
 
-    // Efek suara saat klik tombol dan link
-    const typingSound = document.getElementById('typing-sound');
-    function playClickSound() {
-      typingSound.currentTime = 0;
-      typingSound.play();
+    // --- PERUBAHAN UTAMA UNTUK SUARA PRESISI ---
+
+    // 1. Inisialisasi Web Audio API
+    // Pastikan AudioContext hanya dibuat sekali.
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx;
+
+    // 2. Variabel untuk menyimpan buffer audio yang sudah di-decode
+    let audioBuffer = null;
+
+    // 3. Fungsi untuk memuat dan men-decode file suara
+    // Suara diambil dan disiapkan di memori saat halaman dimuat.
+    async function setupAudio() {
+      // AudioContext dibuat setelah ada interaksi user pertama kali (best practice)
+      // Namun untuk simpelnya, kita buat langsung jika belum ada.
+      if (!audioCtx) {
+        audioCtx = new AudioContext();
+      }
+      
+      // Ambil file suara menggunakan fetch
+      const response = await fetch('click.mp3');
+      // Ubah jadi ArrayBuffer
+      const arrayBuffer = await response.arrayBuffer();
+      // Decode data audio dan simpan di variabel audioBuffer
+      audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
     }
 
+    // Panggil fungsi setup saat halaman selesai memuat
+    setupAudio().catch(error => console.error("Gagal memuat audio:", error));
+
+    // 4. Fungsi untuk memainkan suara dari buffer (sangat cepat & presisi)
+    function playClickSound() {
+      // Cek apakah audio context sudah siap dan buffer sudah ada
+      if (!audioCtx || !audioBuffer) return;
+      
+      // Jika AudioContext dalam keadaan "suspended", lanjutkan dulu
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+
+      // Buat source node baru setiap kali mau mainkan suara
+      const source = audioCtx.createBufferSource();
+      source.buffer = audioBuffer; // Gunakan buffer yang sudah siap
+      source.connect(audioCtx.destination); // Sambungkan ke output (speaker)
+      source.start(0); // Mainkan sekarang juga (delay 0)
+    }
+
+    // 5. Pasang event listener ke semua elemen yang bisa diklik
     window.addEventListener('DOMContentLoaded', () => {
       const allClickable = document.querySelectorAll('a, button');
       allClickable.forEach(el => {
-        el.addEventListener('click', playClickSound);
+        // GANTI dari 'click' ke 'mousedown' agar suara keluar pas tombol DITEKAN, bukan DILEPAS
+        el.addEventListener('mousedown', playClickSound);
       });
     });
   </script>
