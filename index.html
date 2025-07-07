@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="refresh" content="4;url=home.html">
+  <title>Selamat Datang di SadBot Labs</title>
+  <style>
+    :root {
+      --primary: #00eaff;
+      --accent: #7f5af0;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background-color: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Poppins', sans-serif;
+      color: white;
+      overflow: hidden;
+    }
+    .container {
+      text-align: center;
+      animation: fadeIn 1.5s ease-in-out;
+    }
+    .title {
+      font-size: 3rem;
+      font-weight: bold;
+      color: var(--primary);
+      text-shadow: 0 0 15px var(--primary);
+      margin-bottom: 1rem;
+    }
+    .subtitle {
+      font-size: 1.2rem;
+      color: #ccc;
+      letter-spacing: 2px;
+    }
+    .loader-bar {
+      width: 250px;
+      height: 5px;
+      background-color: rgba(127, 90, 240, 0.2);
+      border-radius: 3px;
+      margin-top: 2rem;
+      overflow: hidden;
+      position: relative;
+    }
+    .loader-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary));
+      background-size: 200% 100%;
+      animation: shimmer 2s linear infinite;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <div class="title">SadBot Labs</div>
+    <div class="subtitle">MEMUAT...</div>
+    <div class="loader-bar"></div>
+  </div>
+</body>
+</html>
