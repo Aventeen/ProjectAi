@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-  <title>Selamat Datang di SadBot Labs</title>
+  <title>SadBot Labs</title>
   <style>
     :root {
       --primary: #00eaff;
@@ -14,22 +14,48 @@
       padding: 0;
       height: 100%;
       overflow: hidden;
+      background-color: #000;
     }
     body {
-      background-color: #000;
       font-family: 'Poppins', sans-serif;
       color: white;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: start;
-      padding-top: 50px;
       position: relative;
     }
+
+    #bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: -2;
+      display: none;
+    }
+
+    body.image-bg {
+      background: url('gambar.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.6);
+      z-index: -1;
+    }
+
     .container {
       text-align: center;
+      padding-top: 10hv;
       animation: fadeIn 1.5s ease-in-out;
+      z-index: 2;
     }
+
     .title {
       font-size: 3rem;
       font-weight: bold;
@@ -37,33 +63,24 @@
       text-shadow: 0 0 15px var(--primary);
       margin-bottom: 0.5rem;
     }
+
     .subtitle {
       font-size: 1rem;
       color: #ccc;
-      letter-spacing: 1px;
       margin-bottom: 1rem;
     }
+
     .description {
-      margin-top: 1rem;
       font-size: 1rem;
       color: #aaa;
       max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
+      margin: 0 auto 1.5rem auto;
     }
-    .image-container {
-      margin-top: 2rem;
-    }
-    .image-container img {
-      width: 150px;
-      height: auto;
-      border-radius: 10px;
-      box-shadow: 0 0 20px var(--accent);
-    }
+
     .go-button {
       position: fixed;
-      bottom: calc(env(safe-area-inset-bottom, 20px) + 10px);
-      right: calc(env(safe-area-inset-right, 20px) + 10px);
+      bottom: calc(env(safe-area-inset-bottom, 20px) + 15px);
+      right: calc(env(safe-area-inset-right, 20px) + 15px);
       padding: 0.7rem 2rem;
       font-size: 1rem;
       font-weight: 600;
@@ -74,12 +91,18 @@
       cursor: pointer;
       text-decoration: none;
       transition: background 0.3s ease;
-      z-index: 100;
+      z-index: 10;
     }
+
     .go-button:hover {
       background-color: var(--accent);
       color: #fff;
     }
+
+    audio {
+      display: none;
+    }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: scale(0.9); }
       to { opacity: 1; transform: scale(1); }
@@ -88,16 +111,52 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
+  <!-- Video latar -->
+  <video id="bg-video" autoplay muted loop playsinline>
+    <source src="latar.mp4" type="video/mp4">
+  </video>
+
+  <div class="overlay"></div>
+
   <div class="container">
     <div class="title">SadBot Labs</div>
     <div class="subtitle">Sistem Otomatisasi & Eksperimen Digital</div>
     <p class="description">Halaman ini adalah gerbang utama menuju sistem SadBot Labs. Klik tombol di bawah untuk melanjutkan.</p>
-
-    <div class="image-container">
-      <img src="logo.png" alt="Logo SadBot Labs">
-    </div>
   </div>
 
   <a href="beranda.html" class="go-button">GO</a>
+
+  <audio id="sadbot-audio" autoplay>
+    <source src="audio.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    // MODE PILIHAN: "none", "image", atau "video"
+    const mode = "image"; // << GANTI SESUAI MAU LU TOD
+
+    const video = document.getElementById('bg-video');
+    const body = document.body;
+
+    if (mode === "image") {
+      body.classList.add("image-bg");
+    } else if (mode === "video") {
+      video.style.display = "block";
+      // Kalau error (misalnya video gak ketemu), fallback ke background hitam
+      video.onerror = function () {
+        console.warn("Video gagal dimuat, fallback ke latar kosong.");
+        video.style.display = "none";
+        body.classList.remove("image-bg");
+        body.style.backgroundColor = "#000";
+      };
+    } else {
+      body.style.backgroundColor = "#000";
+    }
+
+    // Hapus audio setelah selesai
+    const audio = document.getElementById('sadbot-audio');
+    audio.addEventListener('ended', function () {
+      audio.remove();
+    });
+  </script>
 </body>
 </html>
